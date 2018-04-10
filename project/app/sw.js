@@ -13,3 +13,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+importScripts(
+  "https://storage.googleapis.com/workbox-cdn/releases/3.0.0/workbox-sw.js"
+);
+
+if (workbox) {
+  console.log(`Yay! Workbox is loaded 🎉`);
+  workbox.precaching.precacheAndRoute([]);
+
+  const bgSyncPlugin = new workbox.backgroundSync.Plugin("dashboardr-queue");
+
+  const networkWithBackgroundSync = new workbox.strategies.NetworkOnly({
+    plugins: [bgSyncPlugin]
+  });
+
+  workbox.routing.registerRoute(
+    /\/api\/add/,
+    networkWithBackgroundSync,
+    "POST"
+  );
+} else {
+  console.log(`Boo! Workbox didn't load 😬`);
+}
